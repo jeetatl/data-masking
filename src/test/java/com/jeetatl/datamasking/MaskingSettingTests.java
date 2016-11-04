@@ -408,6 +408,31 @@ public class MaskingSettingTests {
     }
 
     @Test
+    public void testApplyString() {
+        MaskingSetting ms = null;
+        String str = new String("1234567890");
+        String nullString = null;
+
+        ms = new MaskingSetting();
+        ms.setCharactersMaskLeft(20);
+        ms.setCharactersMaskRight(5);
+
+        String respStr = ms.apply(str);
+        Assert.assertEquals("XXXXXXXXXX", respStr);
+
+        ms = new MaskingSetting();
+        ms.setCharactersMaskLeft(5);
+        ms.setCharactersMaskRight(20);
+
+        respStr = ms.apply(str);
+        Assert.assertEquals("XXXXXXXXXX", respStr);
+
+        respStr = null;
+        respStr = ms.apply(nullString);
+        Assert.assertEquals(null, respStr);
+    }
+
+    @Test
     public void testToString() {
         // compete coverage. not necessary
         MaskingSetting ms = new MaskingSetting();

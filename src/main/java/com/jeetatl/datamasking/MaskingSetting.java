@@ -61,7 +61,7 @@ public class MaskingSetting {
         if (charactersMaskLeft > (percentMaskLeft / 100) * strLength) {
             return Math.min(charactersMaskLeft, strLength);
         } else {
-            return Math.min((int) Math.round((percentMaskLeft / 100) * strLength), strLength);
+            return Math.min((int) Math.ceil((percentMaskLeft / 100) * strLength), strLength);
         }
     }
 
@@ -91,7 +91,7 @@ public class MaskingSetting {
         if (charactersMaskRight > (percentMaskRight / 100) * strLength) {
             return Math.min(charactersMaskRight, strLength);
         } else {
-            return Math.min((int) Math.round((percentMaskRight / 100) * strLength), strLength);
+            return Math.min((int) Math.ceil((percentMaskRight / 100) * strLength), strLength);
         }
     }
 
@@ -138,6 +138,15 @@ public class MaskingSetting {
 
     public String getMaskingString() {
         return maskingString;
+    }
+
+    public String apply(String str) {
+        if (str == null || str.length() == 0){
+           return str;
+        }
+        StringBuffer sb = new StringBuffer(str);
+        apply(sb);
+        return sb.toString();
     }
 
     public void apply(StringBuilder sb) {
