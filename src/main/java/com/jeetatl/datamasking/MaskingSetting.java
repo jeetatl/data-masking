@@ -1,7 +1,11 @@
 package com.jeetatl.datamasking;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Created by mkhokhar on 11/3/16.
+ * @author Mohammad Ali Khokhar
+ * @since 0.1.0
  */
 
 
@@ -11,14 +15,15 @@ public class MaskingSetting {
     private static final double DEFAULT_PERCENTAGE_MASK_LEFT = 0;
     private static final double DEFAULT_PERCENTAGE_MASK_RIGHT = 0;
     private static final char DEFAULT_MASKING_CHARACTER = 'X';
-    private static final String DEFAULT_MASKING_STRING = "X";
 
     private int charactersMaskLeft = DEFAULT_CHARACTERS_MASK_LEFT;
     private int charactersMaskRight = DEFAULT_CHARACTERS_MASK_RIGHT;
     private double percentMaskLeft = DEFAULT_PERCENTAGE_MASK_LEFT;
     private double percentMaskRight = DEFAULT_PERCENTAGE_MASK_RIGHT;
     private char maskingCharacter = DEFAULT_MASKING_CHARACTER;
-    private String maskingString = DEFAULT_MASKING_STRING;
+
+    // TODO: add inner masking logic
+    private List<int[]> innerMasks = new ArrayList<int[]>();
 
     public MaskingSetting() {
     }
@@ -31,7 +36,6 @@ public class MaskingSetting {
         this.percentMaskLeft = percentMaskLeft;
         this.percentMaskRight = percentMaskRight;
         this.maskingCharacter = maskingCharacter;
-        this.maskingString = "" + maskingCharacter;
     }
 
     public int getNumCharactersToMaskLeft(StringBuffer sb) {
@@ -133,11 +137,6 @@ public class MaskingSetting {
 
     public void setMaskingCharacter(char maskingCharacter) {
         this.maskingCharacter = maskingCharacter;
-        this.maskingString = "" + maskingCharacter;
-    }
-
-    public String getMaskingString() {
-        return maskingString;
     }
 
     public String apply(String str) {

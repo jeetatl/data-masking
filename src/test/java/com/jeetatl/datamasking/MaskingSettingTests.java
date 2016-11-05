@@ -16,7 +16,6 @@ public class MaskingSettingTests {
         Assert.assertEquals(0, ms.getCharactersMaskLeft());
         Assert.assertEquals(0, ms.getCharactersMaskRight());
         Assert.assertEquals('X', ms.getMaskingCharacter());
-        Assert.assertEquals("X", ms.getMaskingString());
     }
 
     @Test
@@ -27,7 +26,6 @@ public class MaskingSettingTests {
         Assert.assertEquals(1, ms.getCharactersMaskLeft());
         Assert.assertEquals(2, ms.getCharactersMaskRight());
         Assert.assertEquals('A', ms.getMaskingCharacter());
-        Assert.assertEquals("A", ms.getMaskingString());
     }
 
     @Test
@@ -44,7 +42,6 @@ public class MaskingSettingTests {
         Assert.assertEquals(1, ms.getCharactersMaskLeft());
         Assert.assertEquals(2, ms.getCharactersMaskRight());
         Assert.assertEquals('A', ms.getMaskingCharacter());
-        Assert.assertEquals("A", ms.getMaskingString());
     }
 
     @Test
