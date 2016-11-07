@@ -84,6 +84,7 @@ public class MaskingSetting {
 
         return getNumCharactersToMaskRight(sb.length());
     }
+
     public int getNumCharactersToMaskRight(String str) {
         return getNumCharactersToMaskRight(str.length());
     }
@@ -174,6 +175,17 @@ public class MaskingSetting {
                 sb.setCharAt(i, maskingCharacter);
             }
         }
+
+        if (!innerMasks.isEmpty()) {
+            for (int[] setting : innerMasks) {
+                for (int idx = setting[0] - 1; idx < setting[1]; idx++) {
+                    if (idx >= sb.length()) {
+                        break;
+                    }
+                    sb.setCharAt(idx, maskingCharacter);
+                }
+            }
+        }
     }
 
     public void apply(StringBuffer sb) {
@@ -202,6 +214,21 @@ public class MaskingSetting {
                 sb.setCharAt(i, maskingCharacter);
             }
         }
+
+        if (!innerMasks.isEmpty()) {
+            for (int[] setting : innerMasks) {
+                for (int idx = setting[0] - 1; idx < setting[1]; idx++) {
+                    if (idx >= sb.length()) {
+                        break;
+                    }
+                    sb.setCharAt(idx, maskingCharacter);
+                }
+            }
+        }
+    }
+
+    public void addInnerMasking(int start, int end) {
+        innerMasks.add(new int[]{start, end});
     }
 
     @Override
@@ -212,6 +239,7 @@ public class MaskingSetting {
                 ", percentMaskLeft=" + percentMaskLeft +
                 ", percentMaskRight=" + percentMaskRight +
                 ", maskingCharacter=" + maskingCharacter +
+                ", innerMasks=" + innerMasks +
                 '}';
     }
 }
