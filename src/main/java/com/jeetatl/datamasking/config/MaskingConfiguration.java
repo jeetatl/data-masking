@@ -291,6 +291,7 @@ public class MaskingConfiguration {
     }
 
     /**
+     * Return the configuration for masking attributes of elements.
      * @return Returns the configuration for masking attributes of elements.
      */
     public boolean isAttributesMaskEnabled() {
@@ -298,7 +299,7 @@ public class MaskingConfiguration {
     }
 
     /**
-     *
+     * Set the configuration for masking attributes of element.  Default: true.
      * @param bool Set the configuration for masking attributes of elements.
      */
     public void setAttributeMaskEnabled(boolean bool) {
