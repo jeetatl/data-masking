@@ -428,13 +428,4 @@ public class MaskingSettingTests {
         respStr = ms.apply(nullString);
         Assert.assertEquals(null, respStr);
     }
-
-    @Test
-    public void testToString() {
-        // compete coverage. not necessary
-        MaskingSetting ms = new MaskingSetting();
-        ms.toString();
-        Assert.assertTrue(true);
-    }
-
 }

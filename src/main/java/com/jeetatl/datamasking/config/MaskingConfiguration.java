@@ -2,24 +2,24 @@ package com.jeetatl.datamasking.config;
 
 import com.jeetatl.datamasking.MaskingSetting;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * <p><code>MaskingConfiguration</code> is a concrete class that stores
+ * <p>{@code MaskingConfiguration} is a concrete class that stores
  * the masking configuration of fields defined by the user. It is
  * used to apply masking to different xml and json fields. This is
  * useful for logging the requests and responses that contain PII
  * (Personally identifiable information), PCI (Payment Card Industry),
  * or other sensitive data.</p>
- * <p>
- * <p><code>MaskingConfiguration</code> uses a special format to mask the
+ *
+ * <p>{@code MaskingConfiguration} uses a special format to mask the
  * beginning and/or end of the field.  The masking amount can be provided
  * in terms of number of characters or percentage.</p>
- * <p>
- * The masking strategies consist of the following:
+ *
+ * <p>The masking strategies consist of the following:</p>
  * <ol>
  * <li>Mask X characters from the beginning of field.</li>
  * <li>Mask X percent of characters from the beginning of field.</li>
@@ -28,15 +28,14 @@ import java.util.regex.Pattern;
  * <li>Mask ranges from middle of field.</li>
  * <li>Apply any combination of above masks to a field.</li>
  * </ol>
- * <p>
- * <br/>
- * The format of configuration string consists of following format:
+ *
+ * <p>The format of configuration string consists of following format: </p>
  * <ul>
  * <li>fieldName:maskingSetting1,maskingSetting2|fieldName2:maskingSetting1,maskingSetting2|...</li>
  * </ul>
- * <br/>
- * <p>
- * <table border=0 cellspacing=3 cellpadding=0>
+ *
+ *
+ * <table border=0 cellspacing=3 cellpadding=0 summary="Table shows examples of masking settings and their effects.">
  * <tr style="background-color: rgb(161, 243, 233);">
  * <th>Configuration</th>
  * <th>Field Name</th>
@@ -88,11 +87,14 @@ import java.util.regex.Pattern;
  * </tr>
  * </table>
  *
+ * <p>Any {@code MaskingSetting} string may be used for default masking.</p>
+ *
  * @author Mohammad Ali Khokhar
  * @since 0.1.0
  */
 public class MaskingConfiguration {
     private static final MaskingSetting DEFAULT_MASKING_SETTING = new MaskingSetting();
+    private static final boolean IS_ATTR_MASKED_DEFAULT = true;
 
     private static final String PLUS_SIGN = "+";
     private static final String TILDE_SYMBOL = "~";
@@ -107,19 +109,38 @@ public class MaskingConfiguration {
     private MaskingSetting unknownFieldMasking = DEFAULT_MASKING_SETTING;
     private Map<String, MaskingSetting> fieldConfiguration;
     private String configString;
+    private boolean maskXMLAttributes = IS_ATTR_MASKED_DEFAULT;
 
+    /**
+     * Constructs the {@code MaskingConfiguration} with defaul configuration settings. It
+     * defaults masking for fields that are not found in the configuration string to
+     * no masking.  None of the fields are masked unless {@link #setConfigString} is used
+     * to assing a new configuration string.
+     */
     public MaskingConfiguration() {
         initialize();
     }
 
+
+    /**
+     * Constructs the {@code MaskingConfiguration} from configuration string. It
+     * defaults masking for fields that are not found in the configuration string to
+     * no masking.
+     * @param configString A string containing the fields and their masking configuration.
+     */
     public MaskingConfiguration(String configString) {
         this.configString = configString;
         initialize();
     }
 
     /**
-     * @param configString
-     * @param defaultMasking
+     * Constructs the {@code MaskingConfiguration} from configuration string. It
+     * also sets the default masking for fields that are not found in the
+     * configuration string.
+     * @param configString A string containing the fields and their masking configuration.
+     * @param defaultMasking A string containing masking settings string that will be
+     *                       applied to fields that are not found in field configuration
+     *                       map.
      */
     public MaskingConfiguration(String configString, String defaultMasking) {
         MaskingSetting ms = createMaskingSetting(defaultMasking);
@@ -128,8 +149,11 @@ public class MaskingConfiguration {
         initialize();
     }
 
+    /**
+     * Parses the configuration string and creates a fields configuration map.
+     */
     private void initialize() {
-        fieldConfiguration = new HashMap<String, MaskingSetting>();
+        fieldConfiguration = new TreeMap<>();
 
         if (configString == null || configString.length() == 0) {
             return;
@@ -142,11 +166,23 @@ public class MaskingConfiguration {
         }
     }
 
+    /**
+     * Sets the configuration string for the masking.
+     * @param configString A string containing the fields and their masking configuration.
+     */
     public void setConfigString(String configString) {
         this.configString = configString;
         initialize();
     }
 
+    /**
+     * The {@code apply} method is used to retrieve {@code MaskingSetting}
+     * for the field passed in and applies to {@code String} that
+     * is passed in.  It returns a new {@code String} with the settings applied.
+     * @param fieldName The field name who's settings should be applied.
+     * @param value The {@code String} to which the settings should be applied.
+     * @return The {@code String} after the masking settings have been applied.
+     */
     public String apply(String fieldName, String value) {
         if (value == null || value.length() == 0) {
             return value;
@@ -156,6 +192,13 @@ public class MaskingConfiguration {
         return sb.toString();
     }
 
+    /**
+     * The {@code apply} method is used to retrieve {@code MaskingSetting}
+     * for the field passed in and applies to {@code StringBuilder} that
+     * is passed in.
+     * @param fieldName The field name who's settings should be applied.
+     * @param sb The {@code StringBuilder} to which the settings should be applied.
+     */
     public void apply(String fieldName, StringBuilder sb) {
         if (fieldConfiguration.containsKey(fieldName)) {
             fieldConfiguration.get(fieldName).apply(sb);
@@ -164,6 +207,13 @@ public class MaskingConfiguration {
         }
     }
 
+    /**
+     * The {@code apply} method is used to retrieve {@code MaskingSettin}g
+     * for the field passed in and applies to {@code StringBuffer} that
+     * is passed in.
+     * @param fieldName The field name who's settings should be applied.
+     * @param sb The {@code StringBuffer} to which the settings should be applied.
+     */
     public void apply(String fieldName, StringBuffer sb) {
         if (fieldConfiguration.containsKey(fieldName)) {
             fieldConfiguration.get(fieldName).apply(sb);
@@ -172,6 +222,20 @@ public class MaskingConfiguration {
         }
     }
 
+    /**
+     * Search the configuration to see if a masking setting is available for a particular field.
+     * @param fieldName The field name to search the configuration setting for.
+     * @return true if a {@code MaskingSetting} is found for the {@code fieldName}, false otherwise.
+     */
+    public boolean containsMaskingSettingForField(String fieldName) {
+        return fieldConfiguration.containsKey(fieldName);
+    }
+
+    /**
+     * <p>A helper method to parse a string containing a configuration for a field.</p>
+     * @param pattern A string containing the pattern for masking.
+     * @return {@code MaskingSetting} object that contains the parsed setting.
+     */
     private MaskingSetting createMaskingSetting(String pattern) {
         Matcher outerMatcher = outerMaskingPattern.matcher(pattern);
         Matcher innerMatcher = innerMaskingPattern.matcher(pattern);
@@ -193,6 +257,14 @@ public class MaskingConfiguration {
         return ms;
     }
 
+    /**
+     * <p>A helper method for adding settings to {@code MaskingSetting}.</p>
+     * @param ms {@code MaskingSetting} to which to add settings to.
+     * @param symbol A symbol to determine if the masking is applied to left,
+     *               right, or middle
+     * @param maskingRange The magnitude or range of values to mask.
+     * @param isPercentage Flag to determine if the magnitude passed in is percentage.
+     */
     private void addToMaskingSetting(MaskingSetting ms, String symbol, String maskingRange, boolean isPercentage) {
         if (TILDE_SYMBOL.equals(symbol)) {
             if (maskingRange.contains(RANGE_SEPARATOR)) {
@@ -216,5 +288,21 @@ public class MaskingConfiguration {
                 }
             }
         }
+    }
+
+    /**
+     * Return the configuration for masking attributes of elements.
+     * @return Returns the configuration for masking attributes of elements.
+     */
+    public boolean isAttributesMaskEnabled() {
+        return maskXMLAttributes;
+    }
+
+    /**
+     * Set the configuration for masking attributes of element.  Default: true.
+     * @param bool Set the configuration for masking attributes of elements.
+     */
+    public void setAttributeMaskEnabled(boolean bool) {
+        maskXMLAttributes = bool;
     }
 }
